@@ -1,0 +1,9 @@
+export { default as BrandMark } from "@/features/home/components/BrandMark";
+export { default as Footer } from "@/features/home/components/layout/Footer";
+export { default as HeroSection } from "@/features/home/components/section/HeroSection";
+export { default as Navbar } from "@/features/home/components/layout/Navbar";
+export { default as PortfolioSection } from "@/features/home/components/section/PortfolioSection";
+export { default as AboutSection } from "@/features/home/components/section/AboutSection";
+export { default as ServicesSection } from "@/features/home/components/section/FiturSection";
+export { default as PriceSection } from "@/features/home/components/section/PriceSection";
+export { default as ContactSection } from "@/features/home/components/section/ContactSection";

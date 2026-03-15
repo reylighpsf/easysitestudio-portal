@@ -1,0 +1,2 @@
+ALTER TABLE "PortfolioProduct"
+ADD COLUMN "price" INTEGER NOT NULL DEFAULT 0;

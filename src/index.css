@@ -1,38 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 10%;
+    --background: 210 60% 98%;
+    --foreground: 217 45% 13%;
 
-    --card: 0 0% 96%;
-    --card-foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 217 45% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 217 45% 13%;
 
-    --primary: 243 75% 59%;
+    --primary: 199 89% 48%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 10%;
+    --secondary: 210 55% 96%;
+    --secondary-foreground: 217 45% 13%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 32%;
+    --muted: 210 40% 95%;
+    --muted-foreground: 215 22% 42%;
 
-    --accent: 243 75% 59%;
+    --accent: 188 95% 43%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 243 75% 59%;
+    --border: 210 35% 89%;
+    --input: 210 35% 89%;
+    --ring: 199 89% 48%;
 
     --radius: 0.75rem;
 
@@ -53,15 +53,17 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.08), transparent 38%);
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-bold tracking-tight;
+    font-family: "Sora", "Manrope", system-ui, sans-serif;
   }
 }
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-[hsl(280,75%,59%)];
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-cyan-400;
   }
   .glass {
     @apply bg-background/80 backdrop-blur-xl border border-border/50;

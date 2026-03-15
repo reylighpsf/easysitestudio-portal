@@ -1,73 +1,84 @@
-# Welcome to your Lovable project
+# EasySiteStudio Portal
 
-## Project info
+Full-stack web portal with:
+- Frontend: React + Vite + TypeScript + Tailwind
+- Backend: Node.js + Express
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Folder Structure
 
-## How can I edit this code?
+```txt
+backend/
+dist/
+docs/
+node_modules/
+prisma/
+public/
+src/
+tmp_prisma_config/
+```
 
-There are several ways of editing your application.
+## Prerequisites
 
-**Use Lovable**
+- Node.js 20+ (recommended)
+- npm 10+
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Install
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Run (Frontend + Backend)
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+This starts:
+- React frontend at `http://localhost:5173`
+- Node API backend at `http://localhost:4000`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Vite dev server proxies `/api/*` to the backend.
 
-**Use GitHub Codespaces**
+## Production Build
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```sh
+npm run build
+npm run start
+```
 
-## What technologies are used for this project?
+`npm run start` runs backend from `backend/server.js` and serves static frontend from `dist/`.
 
-This project is built with:
+## API Endpoints
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- `GET /api/health`
+- `GET /api/site-config`
+- `GET /api/portfolio-products`
+- `POST /api/contact`
+- `POST /api/admin/login` (body: `id`, `password`)
+- `GET /api/admin/contacts` (requires admin token)
+- `GET /api/admin/portfolio-products` (requires admin token)
+- `POST /api/admin/portfolio-products` (requires admin token, multipart `imageFile`)
+- `PUT /api/admin/portfolio-products/:id` (requires admin token, multipart `imageFile`)
+- `DELETE /api/admin/portfolio-products/:id` (requires admin token)
 
-## How can I deploy this project?
+## Admin Page
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- URL: `/admin`
+- Login backend menggunakan `id` + `password` admin
+- Fitur:
+  - Kelola product portfolio website (tambah/edit/hapus + upload gambar)
+  - Lihat data kontak masuk dari form contact
 
-## Can I connect a custom domain to my Lovable project?
+## Environment Variables
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- `DATABASE_URL` (Postgres connection string)
+- `BACKEND_PORT` (default: `3001`)
+- `CORS_ORIGIN` (contoh: `http://localhost:5173,http://localhost:3000`)
+- `ADMIN_AUTH_JWT_SECRET` (required for admin endpoints)
+- `ADMIN_AUTH_COOKIE_NAME` (default: `berkah_admin_token`)
+- `ADMIN_AUTH_TTL_HOURS` (default: `24`)
+- `VITE_API_BASE_URL` (contoh: `http://localhost:4000`)
+- `ADMIN_DEFAULT_ID` (default seed admin: `admin`)
+- `ADMIN_DEFAULT_PASSWORD` (default seed admin: `admin12345`)
+- `ADMIN_DEFAULT_NAME` (default seed admin: `Administrator`)

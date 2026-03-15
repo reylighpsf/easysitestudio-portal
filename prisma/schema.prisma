@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SiteConfig {
+  id                 Int      @id @default(1)
+  brandPrefix        String   @db.VarChar(64)
+  brandAccent        String   @db.VarChar(64)
+  contactCtaLabel    String   @db.VarChar(128)
+  contactCtaLink     String   @db.VarChar(512)
+  heroHeadlineMain   String   @db.VarChar(255)
+  heroHeadlineAccent String   @db.VarChar(255)
+  heroHeadlineTail   String   @db.VarChar(255)
+  heroDescription    String   @db.Text
+  footerCopyright    String   @db.VarChar(255)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model ContactSubmission {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(120)
+  email     String   @db.VarChar(180)
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  loginId      String   @unique @db.VarChar(80)
+  name         String   @db.VarChar(120)
+  passwordHash String   @db.VarChar(255)
+  role         String   @default("ADMIN") @db.VarChar(20)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PortfolioProduct {
+  id           Int      @id @default(autoincrement())
+  title        String   @db.VarChar(160)
+  category     String   @db.VarChar(80)
+  price        Int      @default(0)
+  gradientFrom String   @db.VarChar(20)
+  gradientTo   String   @db.VarChar(20)
+  imageUrl     String?  @db.VarChar(1024)
+  galleryImages String[] @default([])
+  projectUrl   String?  @db.VarChar(512)
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isActive, sortOrder, createdAt])
+}
+
+model PricePlan {
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(120)
+  price         Int      @default(0)
+  features      String   @db.Text
+  isHighlighted Boolean  @default(false)
+  sortOrder     Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isActive, sortOrder, createdAt])
+}
