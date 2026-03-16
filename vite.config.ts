@@ -6,14 +6,23 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const serverPort = Number.parseInt(env.VITE_PORT ?? "5173", 10);
-  const backendPort = Number.parseInt(env.BACKEND_PORT ?? env.PORT ?? "3001", 10);
-  const apiTarget = (env.VITE_API_BASE_URL ?? `http://localhost:${backendPort}`).replace(/\/$/, "");
+  const parsePort = (value: string | undefined, fallback: number) => {
+    const parsed = Number.parseInt((value ?? "").trim(), 10);
+    return Number.isNaN(parsed) ? fallback : parsed;
+  };
+
+  const serverPort = parsePort(env.VITE_PORT, 5173);
+  const backendPort = parsePort(env.BACKEND_PORT ?? env.PORT, 3001);
+  const rawApiBaseUrl = (env.VITE_API_BASE_URL ?? "").trim();
+  const apiTarget =
+    rawApiBaseUrl.length > 0
+      ? rawApiBaseUrl.replace(/\/$/, "")
+      : `http://localhost:${backendPort}`;
 
   return {
     server: {
       host: "::",
-      port: Number.isNaN(serverPort) ? 5173 : serverPort,
+      port: serverPort,
       hmr: {
         overlay: false,
       },

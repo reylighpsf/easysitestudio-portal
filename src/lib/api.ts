@@ -70,7 +70,25 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
 };
 
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").trim().replace(/\/$/, "");
+const RAW_API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").trim().replace(/\/$/, "");
+
+const isLoopbackHost = (hostname: string) =>
+  hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+
+const shouldUseRelativeApiBase = (() => {
+  if (!RAW_API_BASE_URL || typeof window === "undefined") {
+    return false;
+  }
+
+  try {
+    const configuredUrl = new URL(RAW_API_BASE_URL);
+    return isLoopbackHost(configuredUrl.hostname) && !isLoopbackHost(window.location.hostname);
+  } catch {
+    return false;
+  }
+})();
+
+const API_BASE_URL = shouldUseRelativeApiBase ? "" : RAW_API_BASE_URL;
 
 export function buildApiUrl(path: string): string {
   if (!API_BASE_URL) {
