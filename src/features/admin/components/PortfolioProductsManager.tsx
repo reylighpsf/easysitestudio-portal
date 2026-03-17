@@ -124,7 +124,28 @@ const PortfolioProductsManager = ({
     [products],
   );
   const isDisabled = isLoading || isMutating;
-  const previewImages = imageFilePreviews.length > 0 ? imageFilePreviews : draft.galleryImages;
+  const persistedImages = useMemo(
+    () =>
+      (Array.isArray(draft.galleryImages) && draft.galleryImages.length > 0
+        ? draft.galleryImages
+        : draft.imageUrl
+          ? [draft.imageUrl]
+          : []
+      ).slice(0, 4),
+    [draft.galleryImages, draft.imageUrl],
+  );
+  const existingImages = useMemo(
+    () => (removeImage ? [] : persistedImages),
+    [persistedImages, removeImage],
+  );
+  const previewImages = useMemo(
+    () =>
+      [...existingImages, ...imageFilePreviews]
+        .filter((item, index, array) => array.indexOf(item) === index)
+        .slice(0, 4),
+    [existingImages, imageFilePreviews],
+  );
+  const remainingImageSlots = Math.max(0, 4 - existingImages.length - imageFiles.length);
 
   function resetForm() {
     setDraft(DEFAULT_DRAFT);
@@ -192,8 +213,21 @@ const PortfolioProductsManager = ({
       return;
     }
 
+    const persistedGalleryImages = removeImage ? [] : persistedImages;
+    const totalImagesCount = persistedGalleryImages.length + imageFiles.length;
+
+    if (totalImagesCount > 4) {
+      setFormError("Total gambar product maksimal 4.");
+      return;
+    }
+
     if (!editingId && imageFiles.length === 0) {
       setFormError("Minimal 1 gambar product wajib diupload.");
+      return;
+    }
+
+    if (editingId && !removeImage && totalImagesCount === 0) {
+      setFormError("Minimal 1 gambar product wajib tersedia.");
       return;
     }
 
@@ -208,6 +242,16 @@ const PortfolioProductsManager = ({
       isActive: draft.isActive,
       removeImage,
     };
+
+    if (editingId) {
+      if (removeImage) {
+        payload.imageUrl = "";
+        payload.galleryImages = [];
+      } else {
+        payload.galleryImages = persistedGalleryImages;
+        payload.imageUrl = persistedGalleryImages[0] ?? "";
+      }
+    }
 
     try {
       if (editingId) {
@@ -295,7 +339,11 @@ const PortfolioProductsManager = ({
               />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="portfolio-image-file">Upload Gambar Product (Maks 4)</Label>
+              <Label htmlFor="portfolio-image-file">
+                {editingId
+                  ? `Tambah Foto Product (Sisa slot ${remainingImageSlots}/4)`
+                  : "Upload Gambar Product (Maks 4)"}
+              </Label>
               <Input
                 id="portfolio-image-file"
                 type="file"
@@ -303,16 +351,31 @@ const PortfolioProductsManager = ({
                 multiple
                 disabled={isDisabled}
                 onChange={(event) => {
-                  const selectedFiles = Array.from(event.target.files ?? []).slice(0, 4);
-                  setImageFiles(selectedFiles);
-                  if (selectedFiles.length > 0) {
-                    setRemoveImage(false);
-                    setDraftField("galleryImages", []);
+                  const selectedFiles = Array.from(event.target.files ?? []);
+                  if (selectedFiles.length === 0) {
+                    return;
+                  }
+
+                  if (remainingImageSlots <= 0) {
+                    setFormError("Gambar sudah penuh (4/4). Hapus dulu jika ingin ganti.");
+                    return;
+                  }
+
+                  const nextFiles = selectedFiles.slice(0, remainingImageSlots);
+                  setImageFiles((prev) => [...prev, ...nextFiles].slice(0, 4 - existingImages.length));
+                  setRemoveImage(false);
+
+                  if (selectedFiles.length > remainingImageSlots) {
+                    setFormError(`Sisa slot gambar ${remainingImageSlots}. File selebihnya diabaikan.`);
+                  } else {
+                    setFormError(null);
                   }
                 }}
               />
               <p className="text-xs text-muted-foreground">
-                Format: JPG, PNG, WEBP, GIF, SVG. Maksimal 5MB per gambar.
+                {editingId
+                  ? "Tambah foto product tanpa menghapus foto yang sudah ada. Total maksimal 4 gambar."
+                  : "Format: JPG, PNG, WEBP, GIF, SVG. Maksimal 5MB per gambar."}
               </p>
             </div>
           </div>
@@ -345,6 +408,20 @@ const PortfolioProductsManager = ({
                 >
                   Hapus Semua Gambar
                 </Button>
+                {imageFiles.length > 0 ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    disabled={isDisabled}
+                    onClick={() => {
+                      setImageFiles([]);
+                      setFormError(null);
+                    }}
+                  >
+                    Batal Tambah Foto Baru
+                  </Button>
+                ) : null}
               </div>
             </div>
           ) : null}

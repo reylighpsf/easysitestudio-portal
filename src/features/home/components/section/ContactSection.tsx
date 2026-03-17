@@ -85,7 +85,7 @@ const ContactSection = () => (
             asChild
             className="mt-4 rounded-full bg-gradient-to-r from-cyan-500 to-sky-500 px-8 text-white hover:from-cyan-400 hover:to-sky-400"
           >
-            <a href="https://wa.me/087857416347" target="_blank" rel="noreferrer">
+            <a href="https://wa.me/6281234567890" target="_blank" rel="noreferrer">
               Kirim via WhatsApp
             </a>
           </Button>

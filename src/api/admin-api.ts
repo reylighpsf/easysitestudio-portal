@@ -77,6 +77,29 @@ export class AdminApiError extends Error {
 
 const DEFAULT_GRADIENT_FROM = "#1d4ed8";
 const DEFAULT_GRADIENT_TO = "#06b6d4";
+const PORTFOLIO_UPLOAD_PATH_PATTERN = /^\/uploads\/portfolio\/[A-Za-z0-9._-]+$/;
+
+function normalizePortfolioImagePath(value: string): string {
+  const normalizedValue = value.trim();
+  if (!normalizedValue) {
+    return "";
+  }
+
+  if (PORTFOLIO_UPLOAD_PATH_PATTERN.test(normalizedValue)) {
+    return normalizedValue;
+  }
+
+  try {
+    const parsedUrl = new URL(normalizedValue);
+    if (PORTFOLIO_UPLOAD_PATH_PATTERN.test(parsedUrl.pathname)) {
+      return parsedUrl.pathname;
+    }
+  } catch {
+    // Abaikan, gunakan nilai mentah jika bukan URL valid.
+  }
+
+  return normalizedValue;
+}
 
 function createAdminHeaders(
   authToken: string,
@@ -193,12 +216,18 @@ function appendPortfolioPayload(formData: FormData, payload: Partial<PortfolioPr
     formData.append("gradientTo", payload.gradientTo);
   }
   if (typeof payload.imageUrl === "string") {
-    formData.append("imageUrl", payload.imageUrl);
+    const normalizedImagePath = normalizePortfolioImagePath(payload.imageUrl);
+    if (normalizedImagePath) {
+      formData.append("imageUrl", normalizedImagePath);
+    }
   }
   if (Array.isArray(payload.galleryImages)) {
     payload.galleryImages.forEach((item) => {
       if (typeof item === "string") {
-        formData.append("galleryImages", item);
+        const normalizedImagePath = normalizePortfolioImagePath(item);
+        if (normalizedImagePath) {
+          formData.append("galleryImages", normalizedImagePath);
+        }
       }
     });
   }

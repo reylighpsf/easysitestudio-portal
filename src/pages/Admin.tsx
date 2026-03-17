@@ -1,4 +1,4 @@
-import { AdminPage } from "@/features/admin";
+import AdminPage from "@/features/admin/AdminPage";
 
 const Admin = () => <AdminPage />;
 

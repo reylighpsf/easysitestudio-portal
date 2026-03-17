@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import type { PortfolioProduct } from "@/lib/api";
 
 type PortfolioSectionProps = {
@@ -24,9 +25,18 @@ const rupiahFormatter = new Intl.NumberFormat("id-ID", {
 type PortfolioImageProps = {
   imageUrl: string | null;
   title: string;
+  fit?: "cover" | "contain";
+  hoverScale?: boolean;
+  className?: string;
 };
 
-const PortfolioImage = ({ imageUrl, title }: PortfolioImageProps) => {
+const PortfolioImage = ({
+  imageUrl,
+  title,
+  fit = "cover",
+  hoverScale = false,
+  className,
+}: PortfolioImageProps) => {
   const [isImageError, setIsImageError] = useState(false);
 
   if (!imageUrl || isImageError) {
@@ -46,7 +56,12 @@ const PortfolioImage = ({ imageUrl, title }: PortfolioImageProps) => {
       alt={title}
       loading="lazy"
       onError={() => setIsImageError(true)}
-      className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+      className={cn(
+        "h-full w-full",
+        fit === "contain" ? "object-contain" : "object-cover",
+        hoverScale ? "transition duration-300 group-hover:scale-105" : "",
+        className,
+      )}
     />
   );
 };
@@ -130,7 +145,7 @@ const PortfolioSection = ({ products }: PortfolioSectionProps) => {
                 className="group cursor-pointer overflow-hidden rounded-2xl border border-cyan-300/20 bg-[#0b1527] shadow-sm transition hover:-translate-y-1 hover:border-cyan-300/40 hover:shadow-[0_18px_34px_-24px_rgba(8,145,178,0.95)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#060c18]"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <PortfolioImage imageUrl={project.imageUrl} title={project.title} />
+                  <PortfolioImage imageUrl={project.imageUrl} title={project.title} hoverScale />
                 </div>
 
                 <div className="space-y-2 p-4">
@@ -168,10 +183,11 @@ const PortfolioSection = ({ products }: PortfolioSectionProps) => {
 
               <div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
                 <div className="overflow-hidden rounded-2xl border border-cyan-300/20">
-                  <div className="aspect-[4/3]">
+                  <div className="aspect-[4/3] bg-[#060d1a] p-2">
                     <PortfolioImage
                       imageUrl={activeGalleryImage ?? selectedProductImages[0] ?? null}
                       title={selectedProduct.title}
+                      fit="contain"
                     />
                   </div>
                 </div>
@@ -192,7 +208,11 @@ const PortfolioSection = ({ products }: PortfolioSectionProps) => {
                             }`}
                             onClick={() => setActiveGalleryImage(imageUrl)}
                           >
-                            <img src={imageUrl} alt={selectedProduct.title} className="h-16 w-full object-cover" />
+                            <img
+                              src={imageUrl}
+                              alt={selectedProduct.title}
+                              className="h-16 w-full bg-[#060d1a] p-1 object-contain"
+                            />
                           </button>
                         );
                       })}
