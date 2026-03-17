@@ -23,7 +23,7 @@ const Footer = ({ apiHealth }: FooterProps) => (
           viewport={{ once: true }}
           transition={{ duration: 0.35 }}
         >
-          <span className="text-xl font-extrabold text-white">T</span>
+          <span className="text-xl font-extrabold text-white">SiteStudio</span>
           <p className="mt-2 text-xs text-cyan-100/85">
             API Status: <span className="font-bold">{apiHealth?.status ?? "offline"}</span>
           </p>
@@ -58,7 +58,7 @@ const Footer = ({ apiHealth }: FooterProps) => (
           viewport={{ once: true }}
           transition={{ delay: 0.14, duration: 0.35 }}
         >
-          (c) 2026 T. All rights reserved.
+          (c) 2026 SiteStudio. All rights reserved.
         </motion.p>
       </div>
     </section>

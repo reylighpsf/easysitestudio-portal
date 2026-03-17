@@ -1,4 +1,4 @@
-import { HomePage } from "@/features/home";
+import HomePage from "@/features/home/HomePage";
 
 const Index = () => <HomePage />;
 

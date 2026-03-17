@@ -69,6 +69,21 @@ const uploadPortfolioImage = (req, res, next) => {
   });
 };
 
+const toStringArray = (value) => {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => (typeof item === "string" ? item.trim() : ""))
+      .filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    const normalizedValue = value.trim();
+    return normalizedValue ? [normalizedValue] : [];
+  }
+
+  return [];
+};
+
 const attachPortfolioImageField = (req, _res, next) => {
   if (!req.body) {
     req.body = {};
@@ -88,9 +103,23 @@ const attachPortfolioImageField = (req, _res, next) => {
     .slice(0, 4)
     .map((filename) => `/uploads/portfolio/${filename}`);
 
+  const existingGalleryImages = toStringArray(req.body.galleryImages).slice(0, 4);
+  const existingImageUrl =
+    typeof req.body.imageUrl === "string" && req.body.imageUrl.trim().length > 0
+      ? req.body.imageUrl.trim()
+      : null;
+
   if (uploadedImageUrls.length > 0) {
-    req.body.imageUrl = uploadedImageUrls[0];
-    req.body.galleryImages = uploadedImageUrls;
+    const mergedGalleryImages = [
+      ...existingGalleryImages,
+      ...(existingImageUrl ? [existingImageUrl] : []),
+      ...uploadedImageUrls,
+    ]
+      .filter((item, index, array) => array.indexOf(item) === index)
+      .slice(0, 4);
+
+    req.body.galleryImages = mergedGalleryImages;
+    req.body.imageUrl = existingImageUrl ?? mergedGalleryImages[0] ?? uploadedImageUrls[0];
   }
 
   if (req.body.removeImage === "true" || req.body.removeImage === true) {
