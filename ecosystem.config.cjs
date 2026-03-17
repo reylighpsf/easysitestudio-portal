@@ -4,7 +4,7 @@ module.exports = {
       name: "easysites-portal",
       cwd: "/var/www/easysitestudio/easysitestudio-portal",
       script: "npm",
-      args: "run dev",
+      args: "start",
       interpreter: "none",
       watch: false,
       autorestart: true,
